@@ -6,14 +6,14 @@
 }
 
 .hero-section {
-  background-color: #6b9080;
+  background-color: #224335;
   color: #fff;
   padding: 25px 0;
 }
 
 .hero-btn {
   background-color: #fff;
-  color: #6b9080;
+  color: #224335;
   border: none;
   padding: 10px 20px;
   font-size: 18px;
@@ -28,12 +28,12 @@
 .feature {
   text-align: center;
   padding: 20px;
-  border-bottom: solid #6b9080 0.5rem;
+  border-bottom: solid #224335 0.5rem;
 }
 
 .cta-btn {
   background-color: #fff;
-  color: #6b9080;
+  color: #224335;
   border: solid 2px;
   padding: 10px 20px;
   font-size: 18px;
@@ -41,9 +41,9 @@
 }
 
 .cta-btn:hover {
-  background-color:   #6b9080;
+  background-color:   #224335;
   color: #fff;
-  border: solid 2px #6b9080;
+  border: solid 2px #224335;
 }
 
 #contactsection {

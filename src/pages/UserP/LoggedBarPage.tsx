@@ -155,7 +155,7 @@ function LoggedBarPage(props: any) {
             return (
                 <Tooltip key={setting.tooltip} title={setting.tooltip} >
                     <MenuItem key={setting.name} onClick={(event) => {event.target; handleChangePage(setting.site);}} sx={{
-                        ":hover": { color: "#6b9080" }, p: 2
+                        ":hover": { color: "#224335" }, p: 2
                     }} selected={selectedPage(setting.site)}>
                         <Typography textAlign="center">{setting.name}</Typography>
                     </MenuItem>
@@ -191,7 +191,7 @@ function LoggedBarPage(props: any) {
             return (
                 <MenuItem key={page.name} onClick={(e) => {e.target; handlePage(page.site)}} selected={selectedPage(page.site)}>
                 <Typography textAlign="inherit" sx={{
-                    ":hover": { color: '#6b9080' }
+                    ":hover": { color: '#224335' }
                 }} >{page.name}</Typography>
             </MenuItem>
             );
@@ -210,7 +210,7 @@ function LoggedBarPage(props: any) {
 
     return (
         
-        <AppBar position="static" sx={{ bgcolor: "#6b9080", borderRadius: "40px" }}>
+        <AppBar position="static" sx={{ bgcolor: "#224335", borderRadius: "40px" }}>
             {verifyAndRedirect()}
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
@@ -282,7 +282,7 @@ function LoggedBarPage(props: any) {
                             </DialogContent>
                             <DialogActions>
                                 <Button sx={{color: "red"}} onClick={hideCloseSessionDialog} autoFocus>Mejor no, cancelar</Button>
-                                <Button sx={{color: "#6b9080"}} onClick={logoutsession}>Si, cerrar sesión</Button>
+                                <Button sx={{color: "#224335"}} onClick={logoutsession}>Si, cerrar sesión</Button>
                             </DialogActions>
                         </Dialog>
 

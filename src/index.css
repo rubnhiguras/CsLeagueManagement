@@ -68,7 +68,7 @@ body {
 }
 
 header {
-  background-color: #6b9080;
+  background-color: #224335;
   color: #fff;
   padding: 20px;
   text-align: center;
@@ -90,7 +90,7 @@ section {
 }
 
 .cta-section {
-  background-color: #6b9080;
+  background-color: #224335;
   text-align: center;
   padding: 50px 20px;
 }
@@ -102,7 +102,7 @@ section {
 
 .cta-button {
   background-color: #fff;
-  color: #6b9080;
+  color: #224335;
   border: none;
   padding: 15px 30px;
   font-size: 16px;
@@ -125,7 +125,7 @@ section {
 }
 
 .service-card h3 {
-  color: #6b9080;
+  color: #224335;
 }
 
 .service-card p {
@@ -134,8 +134,8 @@ section {
 
 .login-button {
   background-color: #fff;
-  color: #6b9080;
-  border: 2px solid #6b9080;
+  color: #224335;
+  border: 2px solid #224335;
   padding: 15px 30px;
   font-size: 16px;
   cursor: pointer;
@@ -147,7 +147,7 @@ section {
 }
 
 .login-button:hover {
-  background-color: #6b9080;
+  background-color: #224335;
   color: #fff;
 }
 

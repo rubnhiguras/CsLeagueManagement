@@ -219,7 +219,7 @@ function LoggedUserDataForm(props: { datauserparam: UserModel } | any) {
                         </DialogContent>
                         <DialogActions>
                             <Button sx={{ color: "red" }} onClick={handleClose} autoFocus>Mejor no, cancelar</Button>
-                            <Button sx={{ color: "#6b9080" }} onClick={handleSendPasswordEmail}>Si, adelante</Button>
+                            <Button sx={{ color: "#224335" }} onClick={handleSendPasswordEmail}>Si, adelante</Button>
                         </DialogActions>
                     </Dialog>
                     <div id='avataruploadsection'>
@@ -258,7 +258,7 @@ function LoggedUserDataForm(props: { datauserparam: UserModel } | any) {
                         </Snackbar>
                     </div>
                     <Tooltip title="Actualizar datos">
-                        <Button variant="contained" onClick={handleSave} sx={{ backgroundColor: "#6b9080", ":hover": { backgroundColor: "#506C60" } }} className='button-section-element' startIcon={<SaveIcon />} />
+                        <Button variant="contained" onClick={handleSave} sx={{ backgroundColor: "#224335", ":hover": { backgroundColor: "#506C60" } }} className='button-section-element' startIcon={<SaveIcon />} />
                     </Tooltip>
                 </CardActions>
 
