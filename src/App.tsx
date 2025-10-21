@@ -20,7 +20,7 @@ function App() {
       </Routes>
     </BrowserRouter>
     <footer >
-        v.{packageJson.version}&nbsp;&nbsp;<i>&#169;</i>2024&nbsp;
+        v.{packageJson.version}&nbsp;&nbsp;<i>&#169;</i>2025&nbsp;
     </footer> 
     </>
   )
