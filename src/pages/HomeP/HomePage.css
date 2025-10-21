@@ -1,55 +1,176 @@
-.home-page{
+/* === Base general === */
+.home-page {
+  position: relative;
+  width: 100%;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  color: #1f2937;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* === Hero section === */
+.hero-section {
+  background: 
+    linear-gradient(rgba(20, 40, 30, 0.85), rgba(20, 40, 30, 0.85)),
+    url('https://plus.unsplash.com/premium_photo-1661881970542-8447015772e8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687');
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+  text-align: center;
+  padding: 140px 20px;
+  position: relative;
+  border-radius: 10px;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/hexellence.png'); /* red de portería sutil */
+  opacity: 0.15;
+  pointer-events: none;
+  border-radius: 10px;
+}
+
+.hero-section h1 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  opacity: 0.95;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* === Botón principal === */
+.hero-btn {
+  background-color: #224335;
+  color: #0f291f;
+  border: none;
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(0, 255, 136, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-btn:hover {
+  background-color: #ffffff;
+  color: #1e3a2f;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+}
+
+/* === Features section === */
+.features-section {
+  padding: 100px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+  justify-items: center;
+  position: relative;
+}
+
+.features-section::before {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%; 
-}
-
-.hero-section {
-  background-color: #224335;
-  color: #fff;
-  padding: 25px 0;
-}
-
-.hero-btn {
-  background-color: #fff;
-  color: #224335;
-  border: none;
-  padding: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.features-section {
-  background-color: #fff;
-  padding: 50px 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://www.transparenttextures.com/patterns/grass.png');
+  opacity: 0.07;
+  pointer-events: none;
 }
 
 .feature {
+  background: #f9fafb;
+  border-radius: 1rem;
+  padding: 40px 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   text-align: center;
-  padding: 20px;
-  border-bottom: solid #224335 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  border-bottom: 4px solid #224335;
 }
 
+.feature:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feature h3 {
+  font-size: 1.5rem;
+  color: #1e3a2f;
+  margin-bottom: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.feature p {
+  color: #4b5563;
+  font-size: 1rem;
+}
+
+/* === CTA button === */
 .cta-btn {
   background-color: #fff;
   color: #224335;
-  border: solid 2px;
-  padding: 10px 20px;
-  font-size: 18px;
+  border: 2px solid #224335;
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 9999px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  
 }
 
 .cta-btn:hover {
-  background-color:   #224335;
+  background-color: #224335;
   color: #fff;
-  border: solid 2px #224335;
+  border: 2px solid #fff;
+  transform: scale(1.05);
 }
 
-#contactsection {
-  margin-top:-50px
+/* === Animación sutil para darle vida === */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-#headersection {
-  margin-bottom:-45px
+.feature {
+  animation: fadeUp 0.8s ease forwards;
 }
+
+a i.fab.fa-instagram {
+  color: #E4405F; /* color oficial de Instagram */
+  transition: transform 0.3s ease;
+}
+
+a i.fab.fa-instagram:hover {
+  transform: scale(1.2);
+}
+

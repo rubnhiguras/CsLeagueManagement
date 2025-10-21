@@ -13,19 +13,20 @@ import { getStorage } from "firebase/storage";
 // CONST SHOULD BE EMPTY IN REPO !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const firebaseConfig = {
-    apiKey: "AIzaSyChxUoqZZtdZTpN5F8Fg9yO8l_2K2vdmL0",
-    authDomain: "lawt-a9eab.firebaseapp.com",
-    projectId: "lawt-a9eab",
-    storageBucket: "lawt-a9eab.appspot.com",
-    messagingSenderId: "259318949322",
-    appId: "1:259318949322:web:7b202337df585bc3f51b33"
+  apiKey: "AIzaSyAIgE1IbqvDpXT9kf8HrkciBqOQhzT_FE0",
+  authDomain: "csleague-app-dev.firebaseapp.com",
+  projectId: "csleague-app-dev",
+  storageBucket: "csleague-app-dev.firebasestorage.app",
+  messagingSenderId: "887024397543",
+  appId: "1:887024397543:web:c3cd69f98666595c58c642",
+  measurementId: "G-FP5ME1QZCC"
 };
 
 export const EMAIL_COND_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const USERS_TYPS = {
     ADM: {value: 'Administrador', code: 'ADM'}, 
-    CLI: {value: 'Cliente', code: 'CLI'}, 
-    ABO: {value: 'Abogado', code: 'ABO'}, 
+    CLI: {value: 'Equipo', code: 'EQU'}, 
+    ABO: {value: 'Jugador', code: 'JUG'}, 
     ALL: {value: 'Publico', code: 'ALL'}
 };
 // Initialize Firebase
