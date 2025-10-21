@@ -1,0 +1,31 @@
+name: Deploy to Firebase Hosting on push
+
+on:
+  push:
+    branches:
+      - dev   # 👈 cambia esta rama según la que quieras desplegar automáticamente
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Descarga el código del repo
+      - uses: actions/checkout@v4
+
+      # 2️⃣ Instala dependencias (usa ci para reproducir exactamente el lockfile)
+      - name: Install dependencies
+        run: npm ci
+
+      # 3️⃣ Construye la app React (esto genera la carpeta 'build' o 'dist')
+      - name: Build React app
+        run: npm run build
+
+      # 4️⃣ Despliega en Firebase Hosting
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CSLEAGUE_APP_DEV }}
+          channelId: live
+          projectId: csleague-app-dev
