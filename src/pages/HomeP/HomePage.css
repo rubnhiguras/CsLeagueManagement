@@ -165,12 +165,36 @@
   animation: fadeUp 0.8s ease forwards;
 }
 
-a i.fab.fa-instagram {
-  color: #E4405F; /* color oficial de Instagram */
-  transition: transform 0.3s ease;
+/* === Botón "Añadir a pantalla de inicio" === */
+.add-to-home-btn {
+  background-color: #224335;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  box-shadow: 0 6px 16px rgba(0, 255, 136, 0.25);
+  position: relative;
+  z-index: 1;
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-a i.fab.fa-instagram:hover {
-  transform: scale(1.2);
+.add-to-home-btn:hover {
+  background-color: #ffffff;
+  color: #224335;
+  border: 2px solid #224335;
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+}
+
+.add-to-home-btn:active {
+  transform: scale(0.98);
 }
 
