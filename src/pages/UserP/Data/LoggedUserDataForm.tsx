@@ -1,6 +1,6 @@
 import { Alert, AlertColor, Backdrop, Button, CardActions, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, MenuItem, Slide, Snackbar, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
-import { UserModel } from '../../../services/UserModel/UserModel';
+import { LoggedUserDataFormProps } from '../../../services/UserModel/UserModel';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { firebaseAuth, firebaseDatabase, firebaseStorage } from '../../../services/Firebase/FirebaseService';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -11,11 +11,11 @@ import SaveIcon from '@mui/icons-material/Save';
 import PasswordIcon from '@mui/icons-material/Password';
 import packageJson from '../../../../package.json';
 
-function LoggedUserDataForm(props: { datauserparam: UserModel }) {
+function LoggedUserDataForm({ datauserparam }: LoggedUserDataFormProps) {
 
-    const nameVar = props.datauserparam?.name;
-    const genderVar = props.datauserparam?.gender;
-    const uuid = props.datauserparam?.uuid;
+    const nameVar = datauserparam?.name;
+    const genderVar = datauserparam?.gender;
+    const uuid = datauserparam?.uuid;
 
     const [open, setOpen] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -24,13 +24,13 @@ function LoggedUserDataForm(props: { datauserparam: UserModel }) {
     const [messageUpload, setMessageUpload] = useState('');
     const [severityMessage, setSeverityMessage] = useState<AlertColor>();
     const [error, setError] = useState('');
-    const [editableDataUser, setEditableDataUser] = useState<{ name: string, gender: string }>(() => {
+    const [editableDataUser, setEditableDataUser] = useState<{ name: string | undefined, gender: string | undefined }>(() => {
         return { name: nameVar, gender: genderVar };
     });
 
-    document.title = document.title = packageJson.title + ' ' + props.datauserparam?.name;
+    document.title = document.title = packageJson.title + ' ' + datauserparam?.name;
 
-    if (props.datauserparam) {
+    if (datauserparam) {
         if (editableDataUser) {
             if (editableDataUser.name == undefined || editableDataUser.gender == undefined) {
                 setEditableDataUser({ name: nameVar, gender: genderVar });
@@ -61,7 +61,7 @@ function LoggedUserDataForm(props: { datauserparam: UserModel }) {
                 () => {
                     if (uuid) {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                            props.datauserparam.urlAvatarProfile = downloadURL;
+                            datauserparam.urlAvatarProfile = downloadURL;
                             const userDoc = doc(firebaseDatabase, 'users', uuid);
                             updateDoc(userDoc, { 'urlAvatarProfile': downloadURL })
                                 .then(() => {
@@ -136,12 +136,12 @@ function LoggedUserDataForm(props: { datauserparam: UserModel }) {
     }
 
     function handleSendPasswordEmail() {
-        if (props.datauserparam) {
+        if (datauserparam) {
             setPasswordAlert(false);
             setOpen(true);
-            sendPasswordResetEmail(firebaseAuth, props.datauserparam.email)
+            sendPasswordResetEmail(firebaseAuth, datauserparam.email)
                 .then(() => {
-                    setMessageUpload("Enviado enlace de restauración de contraseña a " + props.datauserparam.email);
+                    setMessageUpload("Enviado enlace de restauración de contraseña a " + datauserparam.email);
                     setSeverityMessage('success');
                 }).catch((error) => {
                     setMessageUpload("ERROR al enviar enlace de restauración de contraseña:\n " + error.message)
@@ -172,8 +172,8 @@ function LoggedUserDataForm(props: { datauserparam: UserModel }) {
             </Backdrop>
             <FormControl component="form" sx={{ p: 4, textAlign: "left", '& > :not(style)': { m: 1, width: '90%' }, marginTop: "1rem" }} autoComplete="off">
 
-                <Chip label={props.datauserparam?.email} variant="filled" color="default" />
-                <Chip label={props.datauserparam?.role} variant="filled" color="default" />
+                <Chip label={datauserparam?.email} variant="filled" color="default" />
+                <Chip label={datauserparam?.role} variant="filled" color="default" />
 
                 <TextField id="Name-basic" placeholder="Nombre" variant="standard" value={editableDataUser.name} name="name" onChange={handleChange}
                     required />

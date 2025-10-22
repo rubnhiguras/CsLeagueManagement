@@ -13,10 +13,10 @@ import { signOut } from 'firebase/auth';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { USERS_TYPS, firebaseAuth } from '../../services/Firebase/FirebaseService';
 import './User.css'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { PropsBarPage } from '../../services/UserModel/PropsBarPage';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'; 
+import { LoggedUserDataFormProps } from '../../services/UserModel/UserModel';
 
-function LoggedBarPage(props: PropsBarPage) {
+function LoggedBarPage({ datauserparam }: LoggedUserDataFormProps) {
     const defaultusername: string = "'Persona Misteriosa'";
     const settingsTooltip: string = "Espacio personal";
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -41,9 +41,13 @@ function LoggedBarPage(props: PropsBarPage) {
         return result;
     }
 
-    const userlogged = props.username ? userLoggedTrim(props.username) : '';
-    const urlProfile = props.urlProfile ? props.urlProfile : '';
-    const userArt = props.userArt ? props.userArt : '';
+    const userlogged = datauserparam?.name ? userLoggedTrim(datauserparam?.name) : '';
+    const urlProfile = datauserparam?.urlAvatarProfile ? datauserparam?.urlAvatarProfile : '';
+    const userArt = datauserparam?.role ? datauserparam?.role : '';
+
+    const validation = useCallback((path: string, page: Pages) => {
+        return path === page.site && (userArt === page.typeuser.value || USERS_TYPS.ALL === page.typeuser);
+    }, [userArt]);
 
     const pages = useMemo<Pages[]>(() => [
         { typeuser: USERS_TYPS.ALL, name: 'Inicio', site: "/Home/", tooltip: "Bienvenida" },
@@ -74,10 +78,6 @@ function LoggedBarPage(props: PropsBarPage) {
         }
         return isValid;
     }, [pages, settings, validation]);
-
-    const validation = useCallback((path: string, page: Pages) => {
-        return path === page.site && (userArt === page.typeuser.value || USERS_TYPS.ALL === page.typeuser);
-    }, [userArt]);
 
     function logoutsession() {
         signOut(firebaseAuth).then(() => {

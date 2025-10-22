@@ -37,7 +37,7 @@ function LoggedContentPage() {
 
     const componentUserDataForm = (<LoggedUserDataForm datauserparam={dataUserExist}></LoggedUserDataForm>);
 
-    const componentHeaderNav = (<LoggedBarPage username={dataUserExist?.name} urlProfile={dataUserExist?.urlAvatarProfile} userArt={dataUserExist?.role}></LoggedBarPage>);
+    const componentHeaderNav = (<LoggedBarPage datauserparam={dataUserExist}></LoggedBarPage>);
 
     const componentAbogados = (<h3>Página de abogados en contrucción...</h3>);
 
