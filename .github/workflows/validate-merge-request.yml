@@ -52,7 +52,7 @@ jobs:
     name: Build & Deploy
     runs-on: ubuntu-latest
     needs: validate
-    environment: ${{ (github.ref_name == 'pro' || github.ref_name == 'main') && 'dev' || github.ref_name }}
+    environment: dev
 
     steps:
       - name: Checkout code
