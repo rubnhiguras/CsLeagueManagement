@@ -3,11 +3,18 @@ import './HomePage.css';
 import packageJson from '../../../package.json';
 import logo_white from '/src/assets/CSLeague_icon.png';
 
+interface BeforeInstallPromptEvent extends Event {
+  standalone: boolean;
+  readonly platforms: string[];
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
 function HomePage() {
   // Actualiza el título de la página
   document.title = `${packageJson.title} Home`;
 
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
 
   // Detecta instalación o disponibilidad del prompt
@@ -15,13 +22,13 @@ function HomePage() {
     // Detectar si ya está instalada
     const standalone =
       window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true;
+      (window.navigator as unknown as BeforeInstallPromptEvent).standalone === true;
     setIsInstalled(standalone);
 
     // Escuchar el evento beforeinstallprompt
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e as any);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
     // Escuchar cuando la app se instala
