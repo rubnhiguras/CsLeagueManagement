@@ -8,19 +8,17 @@ import { getStorage } from "firebase/storage";
 
 // Import the functions you need from the SDKs you need
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// CONST SHOULD BE EMPTY IN REPO !!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional 
 const firebaseConfig = {
-  apiKey: "AIzaSyAIgE1IbqvDpXT9kf8HrkciBqOQhzT_FE0",
-  authDomain: "csleague-app-dev.firebaseapp.com",
-  projectId: "csleague-app-dev",
-  storageBucket: "csleague-app-dev.firebasestorage.app",
-  messagingSenderId: "887024397543",
-  appId: "1:887024397543:web:c3cd69f98666595c58c642",
-  measurementId: "G-FP5ME1QZCC"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
+
 
 export const EMAIL_COND_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const USERS_TYPS = {
