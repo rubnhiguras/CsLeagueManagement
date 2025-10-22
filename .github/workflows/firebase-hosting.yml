@@ -3,23 +3,26 @@ name: Deploy to Firebase Hosting on push
 on:
   push:
     branches:
-      - dev   # 👈 cambia esta rama según la que quieras desplegar automáticamente
+      - dev
+      - test
+      - pro
 
 jobs:
-  build_and_deploy:
+  # -----------------------------
+  # 1️⃣ Job para entorno DEV
+  # -----------------------------
+  build_and_deploy_branch:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name }}
+    environment: ${{ github.ref_name == 'pro' && 'dev' || github.ref_name }}
+
     steps:
-      # 1️⃣ Descarga el código del repo
       - uses: actions/checkout@v4
 
-      # 2️⃣ Instala dependencias (usa ci para reproducir exactamente el lockfile)
       - name: Install dependencies
         run: npm ci
 
-      # 3️⃣ Construye la app React (esto genera la carpeta 'build' o 'dist')
-      - name: Build React app
-        env: 
+      - name: Build React app (${{ github.ref_name }})
+        env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
           VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
@@ -29,11 +32,44 @@ jobs:
           VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
         run: npm run build
 
-      # 4️⃣ Despliega en Firebase Hosting
-      - name: Deploy to Firebase Hosting
+      - name: Deploy to Firebase Hosting (${{ github.ref_name }})
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CSLEAGUE_APP_DEV }}
           channelId: live
-          projectId: csleague-app-dev
+          projectId: csleague-app-${{ github.ref_name }}
+
+  # -----------------------------
+  # 2️⃣ Job para entorno PRO (solo si el deploy anterior fue bien)
+  # -----------------------------
+  build_and_deploy_production:
+    runs-on: ubuntu-latest
+    needs: build_and_deploy_branch          # 👈 solo corre si dev fue exitoso
+    if: github.ref_name == 'pro'   # 👈 solo en la rama pro
+    environment: pro
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React app (PRODUCTION)
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
+        run: npm run build
+
+      - name: Deploy to Firebase Hosting (PRODUCTION)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CSLEAGUE_APP_DEV }}
+          channelId: live
+          projectId: csleague-app
