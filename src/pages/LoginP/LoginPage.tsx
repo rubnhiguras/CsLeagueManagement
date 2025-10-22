@@ -1,4 +1,4 @@
-import { useState } from 'react'; 
+import { useState } from 'react';
 import './LoginPage.css'
 import Button from '@mui/material/Button';
 import { Alert, Backdrop, Box, Card, CardActions, CardContent, CircularProgress, FormControl, TextField, Tooltip } from '@mui/material';
@@ -7,15 +7,14 @@ import { firebaseAuth, EMAIL_COND_REGEX } from '../../services/Firebase/Firebase
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LoginIcon from '@mui/icons-material/Login';
 import packageJson from '../../../package.json';
-import { FirebaseError } from 'firebase/app';
 
-function LoginPage(){
+function LoginPage() {
   document.title = document.title = packageJson.title + ' ' + 'Login';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [open, setOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
 
   onAuthStateChanged(firebaseAuth, (user) => {
     if (user) {
@@ -36,12 +35,12 @@ function LoginPage(){
   const handleLogin = () => {
     setOpen(true);
     const able = checkPassword() && checkEmail();
-    if(able){
+    if (able) {
       if (email && password) {
         setError("")
         checkLogInfo().finally(() => setOpen(false));
       }
-    }else{
+    } else {
       setError("La contraseña o el email no tienen el formato correcto.")
       setOpen(false);
     }
@@ -50,13 +49,18 @@ function LoginPage(){
   const checkLogInfo = async () => {
     try {
       await signInWithEmailAndPassword(firebaseAuth, email, password);
-    } catch (errorLaunched: FirebaseError | any) {
-      if(errorLaunched.message.includes("invalid-credential")){
-        setError("Credenciales incorrectas");
-      }else{
-        setError("Error en el login: " + errorLaunched)
-      };
+    } catch (errorLaunched: unknown) {
+      if (errorLaunched instanceof Error) {
+        if (errorLaunched.message.includes("invalid-credential")) {
+          setError("Credenciales incorrectas");
+        } else {
+          setError("Error en el login: " + errorLaunched.message);
+        }
+      } else {
+        setError("Error desconocido en el login");
+      }
     }
+
   }
   const handleBack = () => {
     //navigate('/');
@@ -76,7 +80,7 @@ function LoginPage(){
     return password.length > 6;
   }
 
-  function checkEmail(): boolean { 
+  function checkEmail(): boolean {
     return EMAIL_COND_REGEX.test(email);
   }
 
@@ -122,7 +126,7 @@ function LoginPage(){
       </CardContent>
     </Card>
   );
-};
+}
 
-export default LoginPage; 
+export default LoginPage;
 

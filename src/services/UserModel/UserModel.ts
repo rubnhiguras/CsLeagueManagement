@@ -16,3 +16,7 @@ export class UserModel{
 
     }
 } 
+
+export interface LoggedUserDataFormProps {
+  datauserparam: UserModel | undefined;
+}
