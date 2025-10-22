@@ -51,7 +51,7 @@ function LoggedBarPage({ datauserparam }: LoggedUserDataFormProps) {
 
     const pages = useMemo<Pages[]>(() => [
         { typeuser: USERS_TYPS.ALL, name: 'Inicio', site: "/Home/", tooltip: "Bienvenida" },
-        { typeuser: USERS_TYPS.ALL, name: 'Competiciones', site: "/User/casos/", tooltip: "Página de competiciones" }
+        { typeuser: USERS_TYPS.ALL, name: 'Competiciones', site: "/User/FootballLeagues/", tooltip: "Página de competiciones" }
     ], []);
 
     const settings = useMemo<Pages[]>(() => [

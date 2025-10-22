@@ -6,6 +6,7 @@ import LoggedUserDataForm from './Data/LoggedUserDataForm';
 import { firebaseAuth, firebaseDatabase } from '../../services/Firebase/FirebaseService';
 import { collection, doc, getDoc } from 'firebase/firestore';
 import ImgThinking from '../../assets/thinking.svg';
+import LeaguesPage from '../LeaguesP/LeaguesPage'
 
 function LoggedContentPage() {
     const MAIN_PAGE = '/User/';
@@ -58,6 +59,9 @@ function LoggedContentPage() {
             }
             case MAIN_PAGE + "casos/": {
                 return (componentCasos);
+            }
+            case MAIN_PAGE + "FootballLeagues/": {
+                return (<LeaguesPage></LeaguesPage>)
             }
             default: {
                 return (componentGeneric);
