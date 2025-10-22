@@ -123,8 +123,8 @@ function RegisterPage(){
 
   const roles =
   [
-    { name: USERS_TYPS.ABO.value, code: USERS_TYPS.ABO.code },
-    { name: USERS_TYPS.CLI.value, code: USERS_TYPS.CLI.code },
+    { name: USERS_TYPS.EQU.value, code: USERS_TYPS.EQU.code },
+    { name: USERS_TYPS.JUG.value, code: USERS_TYPS.JUG.code },
     { name: USERS_TYPS.ADM.value, code: USERS_TYPS.ADM.code }
   ];
 

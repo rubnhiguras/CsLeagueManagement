@@ -51,19 +51,18 @@ function LoggedBarPage({ datauserparam }: LoggedUserDataFormProps) {
 
     const pages = useMemo<Pages[]>(() => [
         { typeuser: USERS_TYPS.ALL, name: 'Inicio', site: "/Home/", tooltip: "Bienvenida" },
-        { typeuser: USERS_TYPS.ABO, name: 'Casos', site: "/User/casos/", tooltip: "Página de casos" },
-        { typeuser: USERS_TYPS.CLI, name: 'Abogados', site: "/User/abogados/", tooltip: "Página de abogados" }
+        { typeuser: USERS_TYPS.ALL, name: 'Competiciones', site: "/User/casos/", tooltip: "Página de competiciones" }
     ], []);
 
     const settings = useMemo<Pages[]>(() => [
         { typeuser: USERS_TYPS.ALL, name: `${userlogged}`, site: '/User/', tooltip: `Configuración y datos de ${userlogged}` },
-        { typeuser: USERS_TYPS.ABO, name: 'Facturación', site: '/User/setfactur/', tooltip: "Página de facturación" },
-        { typeuser: USERS_TYPS.CLI, name: 'Pagos', site: '/User/setpagos/', tooltip: "Página de pagos" },
-        { typeuser: USERS_TYPS.ABO, name: 'Clientes', site: '/User/setclient/', tooltip: "Página de clientes" },
-        { typeuser: USERS_TYPS.ABO, name: 'Precios', site: '/User/setprecio/', tooltip: "Página de precios" },
-        { typeuser: USERS_TYPS.CLI, name: 'Abogados', site: '/User/setabogad/', tooltip: "Página de abogados" },
+        { typeuser: USERS_TYPS.ADM, name: 'Nuevo Equipo', site: '/User/setteam/', tooltip: "Página de nuevo equipo" },
+        { typeuser: USERS_TYPS.JUG, name: 'Mis Competiciones', site: '/User/setligas/', tooltip: "Página de competiciones (jugador)" },
+        { typeuser: USERS_TYPS.EQU, name: 'Mis Competiciones', site: '/User/setclient/', tooltip: "Página de competiciones (equipo)" },
+        { typeuser: USERS_TYPS.EQU, name: 'Mis Jugadores', site: '/User/setplayers/', tooltip: "Página de jugadores" },
+        { typeuser: USERS_TYPS.JUG, name: 'Mis Equipos', site: '/User/setteams/', tooltip: "Página de equipos" },
         { typeuser: USERS_TYPS.ADM, name: 'Nuevo usuario', site: '/Register', tooltip: "Página de creación de nuevo usuario" },
-        { typeuser: USERS_TYPS.ALL, name: 'Log out', site: '/User/setlogout/', tooltip: "Cerras sesión" }
+        { typeuser: USERS_TYPS.ALL, name: 'Cerrar sesión', site: '/User/setlogout/', tooltip: "Cerras sesión" }
     ], [userlogged]);
 
     const verifyPath = useCallback((path: string): boolean => {

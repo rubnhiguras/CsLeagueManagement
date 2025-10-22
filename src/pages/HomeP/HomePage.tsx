@@ -114,9 +114,9 @@ function HomePage() {
         </div>
         <div className="feature">
           <i className="fas fa-mobile-alt"></i>
-          <h3>Disponibilidad</h3>
+          <h3>Equipos</h3>
           <p>
-            CSLeague está disponible desde cualquier dispositivo. Sigue tu equipo,
+            CSLeague está disponible desde cualquier dispositivo. Sigue a los equipos,
             consulta resultados o administra el club desde tu móvil o PC.
           </p>
         </div>
