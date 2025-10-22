@@ -1,11 +1,6 @@
 name: Validate and Deploy
 
 on:
-  push:
-    branches:
-      - dev
-      - test
-      - pro
   pull_request:
     branches:
       - dev
