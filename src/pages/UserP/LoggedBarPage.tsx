@@ -6,26 +6,23 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar'; 
+import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem'; 
-import { signOut } from 'firebase/auth'; 
-import React from 'react';
-import { USERS_TYPS, firebaseAuth } from '../../services/Firebase/FirebaseService';  
+import MenuItem from '@mui/material/MenuItem';
+import { signOut } from 'firebase/auth';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { USERS_TYPS, firebaseAuth } from '../../services/Firebase/FirebaseService';
 import './User.css'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { PropsBarPage } from '../../services/UserModel/PropsBarPage';
 
-function LoggedBarPage(props: any) {
+function LoggedBarPage(props: PropsBarPage) {
     const defaultusername: string = "'Persona Misteriosa'";
     const settingsTooltip: string = "Espacio personal";
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const [avatarDialog, setAvatarDialog] = React.useState(false); 
-    const [closeSessionDialog, setCloseSessionDialog] = React.useState(false); 
-    
-    let userlogged: string;
-    let urlProfile: string;
-    let userArt: string;
+    const [avatarDialog, setAvatarDialog] = React.useState(false);
+    const [closeSessionDialog, setCloseSessionDialog] = React.useState(false);
 
     const userLoggedTrim = (username: string) => {
         let result = username;
@@ -44,17 +41,17 @@ function LoggedBarPage(props: any) {
         return result;
     }
 
-    userlogged = props.username ? userLoggedTrim(props.username) : '';
-    urlProfile = props.urlProfile ? props.urlProfile : '';
-    userArt    = props.userArt ? props.userArt : '';
+    const userlogged = props.username ? userLoggedTrim(props.username) : '';
+    const urlProfile = props.urlProfile ? props.urlProfile : '';
+    const userArt = props.userArt ? props.userArt : '';
 
-    const pages: Pages[] = [
+    const pages = useMemo<Pages[]>(() => [
         { typeuser: USERS_TYPS.ALL, name: 'Inicio', site: "/Home/", tooltip: "Bienvenida" },
         { typeuser: USERS_TYPS.ABO, name: 'Casos', site: "/User/casos/", tooltip: "Página de casos" },
         { typeuser: USERS_TYPS.CLI, name: 'Abogados', site: "/User/abogados/", tooltip: "Página de abogados" }
-    ];
+    ], []);
 
-    const settings: Pages[] = [
+    const settings = useMemo<Pages[]>(() => [
         { typeuser: USERS_TYPS.ALL, name: `${userlogged}`, site: '/User/', tooltip: `Configuración y datos de ${userlogged}` },
         { typeuser: USERS_TYPS.ABO, name: 'Facturación', site: '/User/setfactur/', tooltip: "Página de facturación" },
         { typeuser: USERS_TYPS.CLI, name: 'Pagos', site: '/User/setpagos/', tooltip: "Página de pagos" },
@@ -63,49 +60,44 @@ function LoggedBarPage(props: any) {
         { typeuser: USERS_TYPS.CLI, name: 'Abogados', site: '/User/setabogad/', tooltip: "Página de abogados" },
         { typeuser: USERS_TYPS.ADM, name: 'Nuevo usuario', site: '/Register', tooltip: "Página de creación de nuevo usuario" },
         { typeuser: USERS_TYPS.ALL, name: 'Log out', site: '/User/setlogout/', tooltip: "Cerras sesión" }
-    ];
+    ], [userlogged]);
 
-    function verifyPath(path: string): boolean { 
+    const verifyPath = useCallback((path: string): boolean => {
         let isValid = false;
-        pages.map((page) => {
-            if(!isValid){ 
-                isValid = validation(path, page);
-            }
+        pages.forEach((page) => {
+            if (!isValid) isValid = validation(path, page);
         });
-        if(!isValid){
-            settings.map((page) => {
-                if(!isValid){
-                    isValid = validation(path, page);
-                }
+        if (!isValid) {
+            settings.forEach((page) => {
+                if (!isValid) isValid = validation(path, page);
             });
-        }   
+        }
         return isValid;
-        //if(USERS_TYPS.ALL === setting.typeuser || userArt === setting.typeuser.value)
-    }
+    }, [pages, settings, validation]);
 
-    function validation(path: string, page: Pages) {
+    const validation = useCallback((path: string, page: Pages) => {
         return path === page.site && (userArt === page.typeuser.value || USERS_TYPS.ALL === page.typeuser);
-    } 
+    }, [userArt]);
 
-    function logoutsession(){
+    function logoutsession() {
         signOut(firebaseAuth).then(() => {
             // Sign-out successful. 
             window.location.href = '/Home/';
             console.info(event, "Signed out successfully");
         }).catch((error) => {
             // An error occurred.
-            console.error(error, "Signed out with error"); 
+            console.error(error, "Signed out with error");
         });
     }
 
     const handleChangePage = (
-       site: string
+        site: string
     ) => {
-        if(site === '/User/setlogout/'){
+        if (site === '/User/setlogout/') {
             showCloseSessionDialog();
-        }else{
+        } else {
             handlePage(site);
-        } 
+        }
     }
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -124,94 +116,98 @@ function LoggedBarPage(props: any) {
     };
 
     const handlePage = (site: string) => {
-        window.location.href = site; 
+        window.location.href = site;
     }
 
-    function selectedPage(param: string): boolean{
-        const fullPath = window.location.pathname; 
-        return fullPath === param; 
+    function selectedPage(param: string): boolean {
+        const fullPath = window.location.pathname;
+        return fullPath === param;
     }
 
-    function showAvatar(): void { 
+    function showAvatar(): void {
         setAvatarDialog(true);
     }
 
-    function hideAvatar(): void { 
+    function hideAvatar(): void {
         setAvatarDialog(false);
     }
 
-    function showCloseSessionDialog(): void { 
+    function showCloseSessionDialog(): void {
         setCloseSessionDialog(true);
     }
 
-    function hideCloseSessionDialog(): void { 
+    function hideCloseSessionDialog(): void {
         setCloseSessionDialog(false);
     }
 
-    function generateMenuItem(setting: Pages): any {
+    function generateMenuItem(setting: Pages): JSX.Element {
 
-        if(USERS_TYPS.ALL === setting.typeuser || userArt === setting.typeuser.value){
+        if (USERS_TYPS.ALL === setting.typeuser || userArt === setting.typeuser.value) {
 
             return (
                 <Tooltip key={setting.tooltip} title={setting.tooltip} >
-                    <MenuItem key={setting.name} onClick={(event) => {event.target; handleChangePage(setting.site);}} sx={{
+                    <MenuItem key={setting.name} onClick={(event) => { event.target; handleChangePage(setting.site); }} sx={{
                         ":hover": { color: "#224335" }, p: 2
                     }} selected={selectedPage(setting.site)}>
                         <Typography textAlign="center">{setting.name}</Typography>
                     </MenuItem>
-                </Tooltip>  
+                </Tooltip>
             );
         } else {
             return (<i></i>);
         }
     }
 
-    function generatePageItem(page: Pages): any {
+    function generatePageItem(page: Pages): JSX.Element {
 
-        if(USERS_TYPS.ALL === page.typeuser || userArt === page.typeuser.value){
+        if (USERS_TYPS.ALL === page.typeuser || userArt === page.typeuser.value) {
             return (
                 <Tooltip title={page.tooltip} key={page.tooltip}>
-                    <MenuItem key={page.name} onClick={(e) => {e.target; handlePage(page.site)}} selected={selectedPage(page.site)}
-                    sx={{border:'solid transparent 0.2rem', ":hover": {border:'solid 0.2rem ', borderRadius: 20} }} 
+                    <MenuItem key={page.name} onClick={(e) => { e.target; handlePage(page.site) }} selected={selectedPage(page.site)}
+                        sx={{ border: 'solid transparent 0.2rem', ":hover": { border: 'solid 0.2rem ', borderRadius: 20 } }}
                     >
-                        <Typography textAlign="inherit"  
-                        sx={{ my: 0, color: 'white', fontSize: 22 }} 
+                        <Typography textAlign="inherit"
+                            sx={{ my: 0, color: 'white', fontSize: 22 }}
                         >{page.name}</Typography>
                     </MenuItem>
-                </Tooltip>  
+                </Tooltip>
             );
         } else {
             return (<i></i>);
         }
     }
 
-    function generatePageSmallItem(page: Pages): any {
+    function generatePageSmallItem(page: Pages): JSX.Element {
 
-        if(USERS_TYPS.ALL === page.typeuser || userArt === page.typeuser.value){
+        if (USERS_TYPS.ALL === page.typeuser || userArt === page.typeuser.value) {
             return (
-                <MenuItem key={page.name} onClick={(e) => {e.target; handlePage(page.site)}} selected={selectedPage(page.site)}>
-                <Typography textAlign="inherit" sx={{
-                    ":hover": { color: '#224335' }
-                }} >{page.name}</Typography>
-            </MenuItem>
+                <MenuItem key={page.name} onClick={(e) => { e.target; handlePage(page.site) }} selected={selectedPage(page.site)}>
+                    <Typography textAlign="inherit" sx={{
+                        ":hover": { color: '#224335' }
+                    }} >{page.name}</Typography>
+                </MenuItem>
             );
         } else {
             return (<i></i>);
         }
     }
-
-    function verifyAndRedirect(): any{
-        if(userArt?.length > 0){
-            if(!verifyPath(window.location.pathname)){
+    /*
+    para que su referencia sea estable y así puedas incluirla en las dependencias sin causar re-ejecuciones innecesarias.
+    */
+    const verifyAndRedirect = useCallback((): void => {
+        if (userArt?.length > 0) {
+            if (!verifyPath(window.location.pathname)) {
                 window.location.href = '/forbidden';
             }
         }
-    }
+    }, [userArt, verifyPath]);
+
+    useEffect(() => {
+        verifyAndRedirect();
+    }, [verifyAndRedirect]);
 
     return (
-        
         <AppBar position="static" sx={{ bgcolor: "#224335", borderRadius: "40px" }}>
-            {verifyAndRedirect()}
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -243,12 +239,12 @@ function LoggedBarPage(props: any) {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => generatePageSmallItem(page))} 
+                            {pages.map((page) => generatePageSmallItem(page))}
                         </Menu>
                     </Box>
 
                     <Box id="mainnavbar" sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex' } }} >
-                        {pages.map((page) => generatePageItem(page))} 
+                        {pages.map((page) => generatePageItem(page))}
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
@@ -261,19 +257,19 @@ function LoggedBarPage(props: any) {
                         <Dialog
                             open={avatarDialog}
                             onClose={hideAvatar}
-                        > 
+                        >
                             <DialogTitle id="avatar-dialog-title">
                                 {userlogged}
                             </DialogTitle>
                             <DialogContent id="avatar-dialog-content">
-                                <Avatar alt={userlogged} src={urlProfile} variant="rounded" sx={{ width: 550, height: 550 }}/>
+                                <Avatar alt={userlogged} src={urlProfile} variant="rounded" sx={{ width: 550, height: 550 }} />
                             </DialogContent>
                         </Dialog>
 
                         <Dialog
                             open={closeSessionDialog}
                             onClose={hideCloseSessionDialog}
-                        > 
+                        >
                             <DialogTitle id="avatar-dialog-title">
                                 Cerrando sesión...
                             </DialogTitle>
@@ -281,13 +277,13 @@ function LoggedBarPage(props: any) {
                                 Se va a cerrar la sesión.
                             </DialogContent>
                             <DialogActions>
-                                <Button sx={{color: "red"}} onClick={hideCloseSessionDialog} autoFocus>Mejor no, cancelar</Button>
-                                <Button sx={{color: "#224335"}} onClick={logoutsession}>Si, cerrar sesión</Button>
+                                <Button sx={{ color: "red" }} onClick={hideCloseSessionDialog} autoFocus>Mejor no, cancelar</Button>
+                                <Button sx={{ color: "#224335" }} onClick={logoutsession}>Si, cerrar sesión</Button>
                             </DialogActions>
                         </Dialog>
 
                         <Menu
-                            sx={{ mt: '45px', marginTop:-2}}
+                            sx={{ mt: '45px', marginTop: -2 }}
                             id="menu-appbar"
                             anchorEl={anchorElUser}
                             anchorOrigin={{
@@ -303,7 +299,7 @@ function LoggedBarPage(props: any) {
                             onClose={handleCloseUserMenu}
                         >
                             <MenuItem key={userlogged} onClick={showAvatar}>
-                                <Avatar alt={userlogged} src={urlProfile} variant="circular" sx={{ width: 111, height: 111 }}/>
+                                <Avatar alt={userlogged} src={urlProfile} variant="circular" sx={{ width: 111, height: 111 }} />
                             </MenuItem>
                             {settings.map((setting) => generateMenuItem(setting))}
                         </Menu>
@@ -314,7 +310,7 @@ function LoggedBarPage(props: any) {
     );
 }
 
-export interface Pages{
+export interface Pages {
     typeuser: { value: string; };
     name: string;
     site: string;

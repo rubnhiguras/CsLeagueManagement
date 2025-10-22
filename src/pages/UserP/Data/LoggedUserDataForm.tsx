@@ -11,7 +11,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import PasswordIcon from '@mui/icons-material/Password';
 import packageJson from '../../../../package.json';
 
-function LoggedUserDataForm(props: { datauserparam: UserModel } | any) {
+function LoggedUserDataForm(props: { datauserparam: UserModel }) {
 
     const nameVar = props.datauserparam?.name;
     const genderVar = props.datauserparam?.gender;
@@ -24,16 +24,16 @@ function LoggedUserDataForm(props: { datauserparam: UserModel } | any) {
     const [messageUpload, setMessageUpload] = useState('');
     const [severityMessage, setSeverityMessage] = useState<AlertColor>();
     const [error, setError] = useState('');
-    const [editableDataUser, setEditableDataUser] = useState<{name: string, gender:string}>(() => { 
-        return {name: nameVar, gender: genderVar};
+    const [editableDataUser, setEditableDataUser] = useState<{ name: string, gender: string }>(() => {
+        return { name: nameVar, gender: genderVar };
     });
 
-    document.title = document.title = packageJson.title + ' ' + props.datauserparam?.name; 
+    document.title = document.title = packageJson.title + ' ' + props.datauserparam?.name;
 
-    if(props.datauserparam ){
-        if(editableDataUser){
-            if(editableDataUser.name == undefined || editableDataUser.gender == undefined){
-                setEditableDataUser({name: nameVar, gender: genderVar});
+    if (props.datauserparam) {
+        if (editableDataUser) {
+            if (editableDataUser.name == undefined || editableDataUser.gender == undefined) {
+                setEditableDataUser({ name: nameVar, gender: genderVar });
             }
         }
     }
@@ -42,7 +42,7 @@ function LoggedUserDataForm(props: { datauserparam: UserModel } | any) {
         { name: 'Masculino', code: 'MA' },
         { name: 'Femenino', code: 'FE' },
         { name: 'Mejor dicho...', code: 'UN' }
-    ]; 
+    ];
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -105,7 +105,7 @@ function LoggedUserDataForm(props: { datauserparam: UserModel } | any) {
             }
         } else {
             setOpen(false);
-        };
+        }
     }
 
     const handleClose = () => {
@@ -152,11 +152,15 @@ function LoggedUserDataForm(props: { datauserparam: UserModel } | any) {
         }
     }
 
-    const handleChange = (e: { target: { name: string, value: any; }; }) => {
-        setEditableDataUser({... editableDataUser, [e.target.name]: e.target.value}); 
-    } 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEditableDataUser({
+            ...editableDataUser,
+            [e.target.name]: e.target.value,
+        });
+    };
 
-    const genderDetailHTML = <TextField sx={{ width: '20ch' }} id="gender-detail-basic" variant="standard" value={editableDataUser.gender === 'Mejor dicho...' ? '' :  editableDataUser.gender} onChange={handleChange} name="gender"/>;
+
+    const genderDetailHTML = <TextField sx={{ width: '20ch' }} id="gender-detail-basic" variant="standard" value={editableDataUser.gender === 'Mejor dicho...' ? '' : editableDataUser.gender} onChange={handleChange} name="gender" />;
 
     return (
         <React.Fragment>
@@ -178,7 +182,7 @@ function LoggedUserDataForm(props: { datauserparam: UserModel } | any) {
                     select
                     id="GenderField"
                     label="Género"
-                    value={( editableDataUser.gender != 'Masculino' &&  editableDataUser.gender != 'Femenino') ? 'Mejor dicho...' : editableDataUser.gender} name="gender"
+                    value={(editableDataUser.gender != 'Masculino' && editableDataUser.gender != 'Femenino') ? 'Mejor dicho...' : editableDataUser.gender} name="gender"
                     variant="standard"
                     onChange={handleChange}
                 >
