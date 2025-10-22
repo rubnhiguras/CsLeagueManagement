@@ -1,0 +1,80 @@
+name: Validate and Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+      - pro
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - dev
+      - test
+      - pro
+      - main
+
+jobs:
+  # -----------------------------
+  # 1️⃣ Job de validación del PR
+  # -----------------------------
+  validate:
+    name: Validate PR (build & lint)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint --if-present
+
+      - name: Run tests
+        run: npm test --if-present
+
+      - name: Build project
+        run: npm run build
+
+  # -----------------------------
+  # 2️⃣ Job de despliegue
+  # -----------------------------
+  build_and_deploy_branch:
+    name: Build & Deploy in DEV
+    runs-on: ubuntu-latest
+    needs: validate
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React app (dev)
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
+        run: npm run build
+
+      - name: Deploy to Firebase Hosting (dev)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with: 
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CSLEAGUE_APP_DEV }}
+          channelId: live
+          projectId: csleague-app-dev
+          disableComment: true

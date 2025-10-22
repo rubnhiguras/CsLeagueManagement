@@ -62,8 +62,8 @@ function RegisterPage(){
         }).finally(() => { setOpenSpinner(false); });
     } else {
       setOpenSpinner(false);
-    };
-  };
+    }
+  }
 
   function setDataInDatabase(uid: string, urlProfile: string, genderToStore: string) {
     const userData: UserModel = new UserModel(
@@ -236,7 +236,7 @@ function RegisterPage(){
         </Box>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
 export default RegisterPage;
