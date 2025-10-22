@@ -11,6 +11,7 @@
 
 👉 **Prueba la aplicación:**  
 🔗 [https://csleague-app-dev.web.app/](https://csleague-app-dev.web.app/)
+Es instalable desde navegador. En el ordenador (con navegador Chrome) puedes desinstalarla desde chrome://apps/
 
 ---
 
