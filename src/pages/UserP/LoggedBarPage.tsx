@@ -70,7 +70,7 @@ function LoggedBarPage() {
     const userLoggedTrim = (username: string) => {
         let result = username;
         const userloggedLength = defaultusername.length;
-        let diff = userloggedLength - result.length;
+        const diff = userloggedLength - result.length;
         if (diff > 0) result = result + ' '.repeat(diff);
         else if (diff < 0) result = result.substring(0, userloggedLength + diff) + '...';
         return result;
@@ -88,7 +88,8 @@ function LoggedBarPage() {
         []
     );
 
-    const settings = useMemo<Pages[]>(() => [
+    const settings = useMemo(
+        () => [
         { typeuser: USERS_TYPS.ALL, name: `${userlogged}`, site: '/User/', tooltip: `Datos del ${userArt}, ${userlogged}` },
         { typeuser: USERS_TYPS.ALL, name: 'Mis Competiciones', site: '/User/Competiciones/', tooltip: "Página de competiciones (jugador)" },
         { typeuser: USERS_TYPS.EQU, name: 'Mis Jugadores', site: '/User/setplayers/', tooltip: "Página de jugadores" },
