@@ -1,21 +1,40 @@
 import { Alert, AlertColor, Backdrop, Button, CardActions, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, MenuItem, Slide, Snackbar, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
-import { LoggedUserDataFormProps } from '../../../services/UserModel/UserModel';
+import { UserModel } from '../../../services/UserModel/UserModel';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { firebaseAuth, firebaseDatabase, firebaseStorage } from '../../../services/Firebase/FirebaseService';
-import { doc, updateDoc } from 'firebase/firestore';
-import { sendPasswordResetEmail } from 'firebase/auth';
+import { collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged, sendPasswordResetEmail, User } from 'firebase/auth';
 import PersonIcon from '@mui/icons-material/Person';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import SaveIcon from '@mui/icons-material/Save';
 import PasswordIcon from '@mui/icons-material/Password';
 import packageJson from '../../../../package.json';
 
-function LoggedUserDataForm({ datauserparam }: LoggedUserDataFormProps) {
+function LoggedUserDataForm() {
 
-    const nameVar = datauserparam?.name;
-    const genderVar = datauserparam?.gender;
-    const uuid = datauserparam?.uuid;
+    onAuthStateChanged(firebaseAuth, (user) => {
+        if (user) {
+            userLogged = user;
+            const uid = userLogged.uid;
+            if (!dataUserExist) {
+                loadUserData(uid);
+            }
+        } else {
+            window.location.href = '/Login';
+        }
+    });
+
+    function loadUserData(uid: string) {
+        const usersCollection = collection(firebaseDatabase, 'users');
+        getDoc(doc(usersCollection, uid))
+            .then((document) => {
+                setDataUserExist(new UserModel(document.get('name'), document.get('email'), document.get('role'), document.get('gender'), document.get('urlAvatarProfile'), document.get('uuid')));
+            }).catch((error) => {
+                console.error(error);
+                alert(error);
+            });
+    }
 
     const [open, setOpen] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -24,13 +43,19 @@ function LoggedUserDataForm({ datauserparam }: LoggedUserDataFormProps) {
     const [messageUpload, setMessageUpload] = useState('');
     const [severityMessage, setSeverityMessage] = useState<AlertColor>();
     const [error, setError] = useState('');
+    const [dataUserExist, setDataUserExist] = useState<UserModel>();
+    const nameVar = dataUserExist?.name;
+    const genderVar = dataUserExist?.gender;
+
     const [editableDataUser, setEditableDataUser] = useState<{ name: string | undefined, gender: string | undefined }>(() => {
         return { name: nameVar, gender: genderVar };
     });
 
-    document.title = document.title = packageJson.title + ' ' + datauserparam?.name;
+    const uuid = dataUserExist?.uuid;
+    document.title = document.title = packageJson.title + ' ' + dataUserExist?.name;
+    let userLogged: User | null = null;
 
-    if (datauserparam) {
+    if (dataUserExist) {
         if (editableDataUser) {
             if (editableDataUser.name == undefined || editableDataUser.gender == undefined) {
                 setEditableDataUser({ name: nameVar, gender: genderVar });
@@ -61,7 +86,7 @@ function LoggedUserDataForm({ datauserparam }: LoggedUserDataFormProps) {
                 () => {
                     if (uuid) {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                            datauserparam.urlAvatarProfile = downloadURL;
+                            //dataUserExist.urlAvatarProfile = downloadURL;
                             const userDoc = doc(firebaseDatabase, 'users', uuid);
                             updateDoc(userDoc, { 'urlAvatarProfile': downloadURL })
                                 .then(() => {
@@ -136,12 +161,12 @@ function LoggedUserDataForm({ datauserparam }: LoggedUserDataFormProps) {
     }
 
     function handleSendPasswordEmail() {
-        if (datauserparam) {
+        if (dataUserExist) {
             setPasswordAlert(false);
             setOpen(true);
-            sendPasswordResetEmail(firebaseAuth, datauserparam.email)
+            sendPasswordResetEmail(firebaseAuth, dataUserExist.email)
                 .then(() => {
-                    setMessageUpload("Enviado enlace de restauración de contraseña a " + datauserparam.email);
+                    setMessageUpload("Enviado enlace de restauración de contraseña a " + dataUserExist.email);
                     setSeverityMessage('success');
                 }).catch((error) => {
                     setMessageUpload("ERROR al enviar enlace de restauración de contraseña:\n " + error.message)
@@ -172,8 +197,8 @@ function LoggedUserDataForm({ datauserparam }: LoggedUserDataFormProps) {
             </Backdrop>
             <FormControl component="form" sx={{ p: 4, textAlign: "left", '& > :not(style)': { m: 1, width: '90%' }, marginTop: "1rem" }} autoComplete="off">
 
-                <Chip label={datauserparam?.email} variant="filled" color="default" />
-                <Chip label={datauserparam?.role} variant="filled" color="default" />
+                <Chip label={dataUserExist?.email} variant="filled" color="default" />
+                <Chip label={dataUserExist?.role} variant="filled" color="default" />
 
                 <TextField id="Name-basic" placeholder="Nombre" variant="standard" value={editableDataUser.name} name="name" onChange={handleChange}
                     required />

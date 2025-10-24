@@ -12,7 +12,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 function HomePage() {
   // Actualiza el título de la página
-  document.title = `${packageJson.title} Home`;
+  document.title = `${packageJson.title}`;
 
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
@@ -61,7 +61,7 @@ function HomePage() {
   };
 
   function toLogin() {
-    window.location.href = '/Login';
+    window.location.href = '/Main';
   }
 
   return (

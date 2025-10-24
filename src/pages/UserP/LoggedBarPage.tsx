@@ -9,135 +9,119 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { signOut } from 'firebase/auth';
-import React, { useCallback, useEffect, useMemo } from 'react';
-import { USERS_TYPS, firebaseAuth } from '../../services/Firebase/FirebaseService';
-import './User.css'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'; 
-import { LoggedUserDataFormProps } from '../../services/UserModel/UserModel';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import React, { useEffect, useMemo, useState } from 'react';
+import { USERS_TYPS, firebaseAuth, firebaseDatabase } from '../../services/Firebase/FirebaseService';
+import './User.css';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { UserModel } from '../../services/UserModel/UserModel';
+import { collection, doc, getDoc } from 'firebase/firestore';
 
-function LoggedBarPage({ datauserparam }: LoggedUserDataFormProps) {
-    const defaultusername: string = "'Persona Misteriosa'";
-    const settingsTooltip: string = "Espacio personal";
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const [avatarDialog, setAvatarDialog] = React.useState(false);
-    const [closeSessionDialog, setCloseSessionDialog] = React.useState(false);
+function LoggedBarPage() {
+    const defaultusername = "'Persona Misteriosa'";
+    const settingsTooltip = "Espacio personal";
+    const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+    const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+    const [avatarDialog, setAvatarDialog] = useState(false);
+    const [closeSessionDialog, setCloseSessionDialog] = useState(false);
+    const [dataUserExist, setDataUserExist] = useState<UserModel>();
+    //const [userLogged, setUserLogged] = useState<User | null>(null);
+
+    // 🔹 Determina si el usuario está logeado
+    //const isGuest = !userLogged;
+
+    function loadUserData(uid: string) {
+        const usersCollection = collection(firebaseDatabase, 'users');
+        getDoc(doc(usersCollection, uid))
+            .then((document) => {
+                if (document.exists()) {
+                    setDataUserExist(
+                        new UserModel(
+                            document.get('name'),
+                            document.get('email'),
+                            document.get('role'),
+                            document.get('gender'),
+                            document.get('urlAvatarProfile'),
+                            document.get('uuid')
+                        )
+                    );
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                alert(error);
+            });
+    }
+
+    // 🔹 Control del estado de autenticación
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+            if (user) {
+                //setUserLogged(user);
+                loadUserData(user.uid);
+            } else {
+                //setUserLogged(null);
+                setDataUserExist(undefined);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
 
     const userLoggedTrim = (username: string) => {
         let result = username;
         const userloggedLength = defaultusername.length;
-        let resultLength = result.length;
-        let diff = userloggedLength - resultLength;
-        if (diff > 0) {
-            while (diff > 0) {
-                result = result + ' ';
-                resultLength = result.length;
-                diff = userloggedLength - resultLength;
-            }
-        } else if (diff < 0) {
-            result = result.substring(0, userloggedLength - (-diff)) + '...';
-        }
+        let diff = userloggedLength - result.length;
+        if (diff > 0) result = result + ' '.repeat(diff);
+        else if (diff < 0) result = result.substring(0, userloggedLength + diff) + '...';
         return result;
-    }
+    };
 
-    const userlogged = datauserparam?.name ? userLoggedTrim(datauserparam?.name) : '';
-    const urlProfile = datauserparam?.urlAvatarProfile ? datauserparam?.urlAvatarProfile : '';
-    const userArt = datauserparam?.role ? datauserparam?.role : '';
+    const userlogged = dataUserExist?.name ? userLoggedTrim(dataUserExist.name) : 'Invitado';
+    const urlProfile = dataUserExist?.urlAvatarProfile || '';
+    const userArt = dataUserExist?.role || '';
 
-    const validation = useCallback((path: string, page: Pages) => {
-        return path === page.site && (userArt === page.typeuser.value || USERS_TYPS.ALL === page.typeuser);
-    }, [userArt]);
-
-    const pages = useMemo<Pages[]>(() => [
-        { typeuser: USERS_TYPS.ALL, name: 'Inicio', site: "/Home/", tooltip: "Bienvenida" },
-        { typeuser: USERS_TYPS.ALL, name: 'Competiciones', site: "/User/FootballLeagues/", tooltip: "Página de competiciones" }
-    ], []);
+    const pages = useMemo(
+        () => [
+            { typeuser: USERS_TYPS.ALL, name: 'Inicio', site: '/Home/', tooltip: 'Bienvenida' },
+            { typeuser: USERS_TYPS.ALL, name: 'Competiciones', site: '/Main/Competiciones/', tooltip: 'Página de competiciones' },
+        ],
+        []
+    );
 
     const settings = useMemo<Pages[]>(() => [
-        { typeuser: USERS_TYPS.ALL, name: `${userlogged}`, site: '/User/', tooltip: `Configuración y datos de ${userlogged}` },
-        { typeuser: USERS_TYPS.ADM, name: 'Nuevo Equipo', site: '/User/setteam/', tooltip: "Página de nuevo equipo" },
-        { typeuser: USERS_TYPS.JUG, name: 'Mis Competiciones', site: '/User/setligas/', tooltip: "Página de competiciones (jugador)" },
-        { typeuser: USERS_TYPS.EQU, name: 'Mis Competiciones', site: '/User/setclient/', tooltip: "Página de competiciones (equipo)" },
+        { typeuser: USERS_TYPS.ALL, name: `${userlogged}`, site: '/User/', tooltip: `Datos del ${userArt}, ${userlogged}` },
+        { typeuser: USERS_TYPS.ALL, name: 'Mis Competiciones', site: '/User/Competiciones/', tooltip: "Página de competiciones (jugador)" },
         { typeuser: USERS_TYPS.EQU, name: 'Mis Jugadores', site: '/User/setplayers/', tooltip: "Página de jugadores" },
         { typeuser: USERS_TYPS.JUG, name: 'Mis Equipos', site: '/User/setteams/', tooltip: "Página de equipos" },
+        { typeuser: USERS_TYPS.ADM, name: 'Jugadores y equipos', site: '/User/setadmdata/', tooltip: "Página de administración de usuarios" },
         { typeuser: USERS_TYPS.ADM, name: 'Nuevo usuario', site: '/Register', tooltip: "Página de creación de nuevo usuario" },
         { typeuser: USERS_TYPS.ALL, name: 'Cerrar sesión', site: '/User/setlogout/', tooltip: "Cerras sesión" }
     ], [userlogged]);
 
-    const verifyPath = useCallback((path: string): boolean => {
-        let isValid = false;
-        pages.forEach((page) => {
-            if (!isValid) isValid = validation(path, page);
-        });
-        if (!isValid) {
-            settings.forEach((page) => {
-                if (!isValid) isValid = validation(path, page);
-            });
-        }
-        return isValid;
-    }, [pages, settings, validation]);
-
     function logoutsession() {
-        signOut(firebaseAuth).then(() => {
-            // Sign-out successful. 
-            window.location.href = '/Home/';
-            console.info(event, "Signed out successfully");
-        }).catch((error) => {
-            // An error occurred.
-            console.error(error, "Signed out with error");
-        });
+        signOut(firebaseAuth)
+            .then(() => (window.location.href = '/Home/'))
+            .catch((error) => console.error(error));
     }
 
-    const handleChangePage = (
-        site: string
-    ) => {
-        if (site === '/User/setlogout/') {
-            showCloseSessionDialog();
-        } else {
-            handlePage(site);
-        }
-    }
-
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
+    const handleChangePage = (site: string) => {
+        if (site === '/User/setlogout/') showCloseSessionDialog();
+        else handlePage(site);
     };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
-
-    const handlePage = (site: string) => {
-        window.location.href = site;
-    }
-
+    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorElNav(event.currentTarget);
+    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorElUser(event.currentTarget);
+    const handleCloseNavMenu = () => setAnchorElNav(null);
+    const handleCloseUserMenu = () => setAnchorElUser(null);
+    const handlePage = (site: string) => (window.location.href = site);
     function selectedPage(param: string): boolean {
         const fullPath = window.location.pathname;
         return fullPath === param;
     }
-
-    function showAvatar(): void {
-        setAvatarDialog(true);
-    }
-
-    function hideAvatar(): void {
-        setAvatarDialog(false);
-    }
-
-    function showCloseSessionDialog(): void {
-        setCloseSessionDialog(true);
-    }
-
-    function hideCloseSessionDialog(): void {
-        setCloseSessionDialog(false);
-    }
+    const showAvatar = () => setAvatarDialog(true);
+    const hideAvatar = () => setAvatarDialog(false);
+    const showCloseSessionDialog = () => setCloseSessionDialog(true);
+    const hideCloseSessionDialog = () => setCloseSessionDialog(false);
 
     function generateMenuItem(setting: Pages): JSX.Element {
 
@@ -190,20 +174,6 @@ function LoggedBarPage({ datauserparam }: LoggedUserDataFormProps) {
             return (<i></i>);
         }
     }
-    /*
-    para que su referencia sea estable y así puedas incluirla en las dependencias sin causar re-ejecuciones innecesarias.
-    */
-    const verifyAndRedirect = useCallback((): void => {
-        if (userArt?.length > 0) {
-            if (!verifyPath(window.location.pathname)) {
-                window.location.href = '/forbidden';
-            }
-        }
-    }, [userArt, verifyPath]);
-
-    useEffect(() => {
-        verifyAndRedirect();
-    }, [verifyAndRedirect]);
 
     return (
         <AppBar position="static" sx={{ bgcolor: "#224335", borderRadius: "40px" }}>
@@ -310,10 +280,10 @@ function LoggedBarPage({ datauserparam }: LoggedUserDataFormProps) {
 }
 
 export interface Pages {
-    typeuser: { value: string; };
+    typeuser: { value: string };
     name: string;
     site: string;
     tooltip: string;
 }
 
-export default LoggedBarPage
+export default LoggedBarPage;

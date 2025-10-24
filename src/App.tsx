@@ -5,7 +5,8 @@ import RegisterPage from './pages/RegisterP/RegisterPage'
 import LoggedContentPage from './pages/UserP/LoggedContentPage'
 import packageJson from '../package.json'; 
 import NotFoundPage from './pages/WrongP/NotFoundPage'
-import ForgotPage from './pages/LoginP/ForgotPage'
+import ForgotPage from './pages/LoginP/ForgotPage'   
+import MainContentPage from './pages/UserP/MainContentPage'
 
 function App() {  
   return (
@@ -13,11 +14,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route index path='/' element={<HomePage />} key="home"  />
-        <Route path='Home' element={<HomePage />} key="home"  />
+        <Route path='Home' element={<HomePage />} key="home"  /> 
         <Route path='Login' element={<LoginPage />} key="login"  />
         <Route path='Register' element={<RegisterPage />} key="register"  />
         <Route path='Forgot' element={<ForgotPage />} key="forgot"  /> 
-        <Route path='User/*' element={<LoggedContentPage />} key="user" /> 
+        <Route path='Main/*' element={<MainContentPage />} key="maincontent" /> 
+        <Route path='User/*' element={<LoggedContentPage />} key="usercontent" /> 
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

@@ -1,6 +1,6 @@
 import "../HomeP/HomePage.css";
 
-const FootballLeagues = () => {
+const FeedPage = () => {
   
   const leagues = [
     {
@@ -69,4 +69,4 @@ const FootballLeagues = () => {
   );
 };
 
-export default FootballLeagues;
+export default FeedPage;
