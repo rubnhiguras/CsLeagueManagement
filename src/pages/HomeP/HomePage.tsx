@@ -12,7 +12,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 function HomePage() {
   // Actualiza el título de la página
-  document.title = `${packageJson.title} Home`;
+  document.title = `${packageJson.title}`;
 
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
@@ -61,7 +61,7 @@ function HomePage() {
   };
 
   function toLogin() {
-    window.location.href = '/Login';
+    window.location.href = '/Main';
   }
 
   return (
@@ -114,9 +114,9 @@ function HomePage() {
         </div>
         <div className="feature">
           <i className="fas fa-mobile-alt"></i>
-          <h3>Disponibilidad</h3>
+          <h3>Equipos</h3>
           <p>
-            CSLeague está disponible desde cualquier dispositivo. Sigue tu equipo,
+            CSLeague está disponible desde cualquier dispositivo. Sigue a los equipos,
             consulta resultados o administra el club desde tu móvil o PC.
           </p>
         </div>
