@@ -97,7 +97,7 @@ function LoggedBarPage() {
         { typeuser: USERS_TYPS.ADM, name: 'Jugadores y equipos', site: '/User/setadmdata/', tooltip: "Página de administración de usuarios" },
         { typeuser: USERS_TYPS.ADM, name: 'Nuevo usuario', site: '/Register', tooltip: "Página de creación de nuevo usuario" },
         { typeuser: USERS_TYPS.ALL, name: 'Cerrar sesión', site: '/User/setlogout/', tooltip: "Cerras sesión" }
-    ], [userlogged]);
+    ], [userlogged, userArt]);
 
     function logoutsession() {
         signOut(firebaseAuth)
