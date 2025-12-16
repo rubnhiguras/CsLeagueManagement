@@ -1,25 +1,24 @@
 import React from 'react';
 import LoggedBarPage from './LoggedBarPage'; 
-import LoggedUserDataForm from './Data/LoggedUserDataForm'; 
 import ImgThinking from '../../assets/thinking.svg';
 import LeaguesPage from '../LeaguesP/LeaguesPage'
+import FeedPage from '../Feed/FeedPage';
 
-function LoggedContentPage() { 
-    const USER_PAGE = '/User/';
-
-    const componentUserDataForm = (<LoggedUserDataForm ></LoggedUserDataForm>);
-
+function MainContentPage() {
+    const MAIN_PAGE = '/Main/'; 
+    
     const componentHeaderNav = (<LoggedBarPage></LoggedBarPage>); 
 
     const componentGeneric = (<><h3>Página seleccionada actualmente en contrucción...</h3><div><img src={ImgThinking} width="250" height="260"></img></div></>);
 
     function generateUserDataContent(): JSX.Element {
         switch (window.location.pathname) {
-            case USER_PAGE: { 
-                return (componentUserDataForm);
-            } 
-            case USER_PAGE + "Competiciones/": {
-                document.title = document.title = 'Mis Competiciones';
+            case MAIN_PAGE: {
+                document.title = document.title = 'Feed';
+                return (<FeedPage></FeedPage>)
+            }
+            case MAIN_PAGE + "Competiciones/": {
+                document.title = document.title = 'Competiciones';
                 return (<LeaguesPage></LeaguesPage>)
             }
             default: {
@@ -36,4 +35,4 @@ function LoggedContentPage() {
     );
 }
 
-export default LoggedContentPage;
+export default MainContentPage;
