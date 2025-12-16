@@ -7,7 +7,6 @@ import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { doc, setDoc } from 'firebase/firestore';
 import { UserModel } from '../../services/UserModel/UserModel';
 import { EMAIL_COND_REGEX, USERS_TYPS, firebaseAuth, firebaseDatabase } from '../../services/Firebase/FirebaseService';
-import packageJson from '../../../package.json';
 
 const defaultAvatarUrlUn: string = "https://www.limonium.org/wp-content/uploads/2023/08/default-avatar.webp";
 const defaultAvatarUrlFe: string = "https://www.svgrepo.com/show/10678/avatar.svg"
@@ -15,7 +14,7 @@ const defaultAvatarUrlMa: string = "https://www.svgrepo.com/show/61986/avatar.sv
 
 function RegisterPage(){
 
-  document.title = document.title = packageJson.title + ' ' + 'Register';
+  document.title = document.title = 'Registro de Usuario';
 
   const [openSpinner, setOpenSpinner] = useState(false);
   const [email, setEmail] = useState('');
@@ -123,8 +122,8 @@ function RegisterPage(){
 
   const roles =
   [
-    { name: USERS_TYPS.ABO.value, code: USERS_TYPS.ABO.code },
-    { name: USERS_TYPS.CLI.value, code: USERS_TYPS.CLI.code },
+    { name: USERS_TYPS.EQU.value, code: USERS_TYPS.EQU.code },
+    { name: USERS_TYPS.JUG.value, code: USERS_TYPS.JUG.code },
     { name: USERS_TYPS.ADM.value, code: USERS_TYPS.ADM.code }
   ];
 
