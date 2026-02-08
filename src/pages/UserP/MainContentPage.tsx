@@ -5,7 +5,7 @@ import LeaguesPage from '../LeaguesP/LeaguesPage'
 import FeedPage from '../Feed/FeedPage';
 
 function MainContentPage() {
-    const MAIN_PAGE = '/Main/'; 
+    const MAIN_PAGE = '/Main'; 
     
     const componentHeaderNav = (<LoggedBarPage></LoggedBarPage>); 
 
@@ -17,7 +17,15 @@ function MainContentPage() {
                 document.title = document.title = 'Feed';
                 return (<FeedPage></FeedPage>)
             }
-            case MAIN_PAGE + "Competiciones/": {
+            case MAIN_PAGE + "/": {
+                document.title = document.title = 'Feed';
+                return (<FeedPage></FeedPage>)
+            }
+            case MAIN_PAGE + "/Feed/": {
+                document.title = document.title = 'Feed';
+                return (<FeedPage></FeedPage>)
+            }
+            case MAIN_PAGE + "/Competiciones/": {
                 document.title = document.title = 'Competiciones';
                 return (<LeaguesPage></LeaguesPage>)
             }
