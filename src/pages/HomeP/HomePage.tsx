@@ -60,7 +60,7 @@ function HomePage() {
     setDeferredPrompt(null);
   };
 
-  function toLogin() {
+  function toPlatform() {
     window.location.href = '/Main';
   }
 
@@ -74,7 +74,7 @@ function HomePage() {
           </h1>
           <div id="call-to-action" className="call-to-action">
             <div className="cta-text">
-              <button id="cta-btn" className="cta-btn" onClick={toLogin}>
+              <button id="cta-btn" className="cta-btn" onClick={toPlatform}>
                 Entrar en la plataforma
               </button>
             </div>

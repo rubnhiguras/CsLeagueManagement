@@ -83,6 +83,7 @@ function LoggedBarPage() {
     const pages = useMemo(
         () => [
             { typeuser: USERS_TYPS.ALL, name: 'Inicio', site: '/Home/', tooltip: 'Bienvenida' },
+            { typeuser: USERS_TYPS.ALL, name: 'Feed', site: '/Main/Feed/', tooltip: 'Página de noticias' },
             { typeuser: USERS_TYPS.ALL, name: 'Competiciones', site: '/Main/Competiciones/', tooltip: 'Página de competiciones' },
         ],
         []
@@ -90,14 +91,14 @@ function LoggedBarPage() {
 
     const settings = useMemo(
         () => [
-        { typeuser: USERS_TYPS.ALL, name: `${userlogged}`, site: '/User/', tooltip: `Datos del ${userArt}, ${userlogged}` },
-        { typeuser: USERS_TYPS.ALL, name: 'Mis Competiciones', site: '/User/Competiciones/', tooltip: "Página de competiciones (jugador)" },
-        { typeuser: USERS_TYPS.EQU, name: 'Mis Jugadores', site: '/User/setplayers/', tooltip: "Página de jugadores" },
-        { typeuser: USERS_TYPS.JUG, name: 'Mis Equipos', site: '/User/setteams/', tooltip: "Página de equipos" },
-        { typeuser: USERS_TYPS.ADM, name: 'Jugadores y equipos', site: '/User/setadmdata/', tooltip: "Página de administración de usuarios" },
-        { typeuser: USERS_TYPS.ADM, name: 'Nuevo usuario', site: '/Register', tooltip: "Página de creación de nuevo usuario" },
-        { typeuser: USERS_TYPS.ALL, name: 'Cerrar sesión', site: '/User/setlogout/', tooltip: "Cerras sesión" }
-    ], [userlogged, userArt]);
+            { typeuser: USERS_TYPS.ALL, name: `${userlogged}`, site: '/User/', tooltip: `Datos del ${userArt}, ${userlogged}` },
+            { typeuser: USERS_TYPS.ALL, name: 'Mis Competiciones', site: '/User/Competiciones/', tooltip: "Página de competiciones (jugador)" },
+            { typeuser: USERS_TYPS.EQU, name: 'Mis Jugadores', site: '/User/setplayers/', tooltip: "Página de jugadores" },
+            { typeuser: USERS_TYPS.JUG, name: 'Mis Equipos', site: '/User/setteams/', tooltip: "Página de equipos" },
+            { typeuser: USERS_TYPS.ADM, name: 'Jugadores y equipos', site: '/User/setadmdata/', tooltip: "Página de administración de usuarios" },
+            { typeuser: USERS_TYPS.ADM, name: 'Nuevo usuario', site: '/Register', tooltip: "Página de creación de nuevo usuario" },
+            { typeuser: USERS_TYPS.ALL, name: 'Cerrar sesión', site: '/User/setlogout/', tooltip: "Cerras sesión" }
+        ], [userlogged, userArt]);
 
     function logoutsession() {
         signOut(firebaseAuth)
@@ -117,7 +118,10 @@ function LoggedBarPage() {
     const handlePage = (site: string) => (window.location.href = site);
     function selectedPage(param: string): boolean {
         const fullPath = window.location.pathname;
-        return fullPath === param;
+        const isMain = (fullPath === '/Main/' || fullPath === '/Main') && param === '/Main/Feed/' ;
+        const isTheSiteSelected = isMain ? isMain : fullPath === param;
+        console.log(" PATH SET fullPath: " + fullPath + " param: " + param + " value: " + isTheSiteSelected);
+        return isTheSiteSelected;
     }
     const showAvatar = () => setAvatarDialog(true);
     const hideAvatar = () => setAvatarDialog(false);
@@ -176,107 +180,126 @@ function LoggedBarPage() {
         }
     }
 
+    function toLogin() {
+        window.location.href = '/User';
+    }
+
+    function generateUserButtonToolbar(userLoggedName: string): JSX.Element {
+
+        if ('Invitado' === userLoggedName) {
+            return (
+                <Tooltip title="Iniciar Sesión" >
+                    <IconButton id="cta-btn" className="cta-btn" onClick={toLogin}>
+                        <Avatar alt="Iniciar sesión" />
+                    </IconButton>
+                </Tooltip>
+            );
+        } else {
+            return (<Menu
+                sx={{ mt: '45px', marginTop: -2 }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+            >
+                <Tooltip title={settingsTooltip} >
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt={userlogged} src={urlProfile} />
+                    </IconButton>
+                </Tooltip>
+                <MenuItem key={userlogged} onClick={showAvatar}>
+                    <Avatar alt={userlogged} src={urlProfile} variant="circular" sx={{ width: 111, height: 111 }} />
+                </MenuItem>
+                {settings.map((setting) => generateMenuItem(setting))}
+            </Menu>);
+        }
+    }
+
     return (
-        <AppBar position="static" sx={{ bgcolor: "#224335", borderRadius: "40px" }}>
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            {pages.map((page) => generatePageSmallItem(page))}
-                        </Menu>
-                    </Box>
-
-                    <Box id="mainnavbar" sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex' } }} >
-                        {pages.map((page) => generatePageItem(page))}
-                    </Box>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title={settingsTooltip} >
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt={userlogged} src={urlProfile} />
+        <React.Fragment>
+            <AppBar position="static" sx={{ bgcolor: "#224335", borderRadius: "40px" }}>
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleOpenNavMenu}
+                                color="inherit"
+                            >
+                                <MenuIcon />
                             </IconButton>
-                        </Tooltip>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorElNav}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                open={Boolean(anchorElNav)}
+                                onClose={handleCloseNavMenu}
+                                sx={{
+                                    display: { xs: 'block', md: 'none' },
+                                }}
+                            >
+                                {pages.map((page) => generatePageSmallItem(page))}
+                            </Menu>
+                        </Box>
 
-                        <Dialog
-                            open={avatarDialog}
-                            onClose={hideAvatar}
-                        >
-                            <DialogTitle id="avatar-dialog-title">
-                                {userlogged}
-                            </DialogTitle>
-                            <DialogContent id="avatar-dialog-content">
-                                <Avatar alt={userlogged} src={urlProfile} variant="rounded" sx={{ width: 550, height: 550 }} />
-                            </DialogContent>
-                        </Dialog>
+                        <Box id="mainnavbar" sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex' } }} >
+                            {pages.map((page) => generatePageItem(page))}
+                        </Box>
 
-                        <Dialog
-                            open={closeSessionDialog}
-                            onClose={hideCloseSessionDialog}
-                        >
-                            <DialogTitle id="avatar-dialog-title">
-                                Cerrando sesión...
-                            </DialogTitle>
-                            <DialogContent id="avatar-dialog-content">
-                                Se va a cerrar la sesión.
-                            </DialogContent>
-                            <DialogActions>
-                                <Button sx={{ color: "red" }} onClick={hideCloseSessionDialog} autoFocus>Mejor no, cancelar</Button>
-                                <Button sx={{ color: "#224335" }} onClick={logoutsession}>Si, cerrar sesión</Button>
-                            </DialogActions>
-                        </Dialog>
+                        <Box sx={{ flexGrow: 0 }}>
+                            <Dialog
+                                open={avatarDialog}
+                                onClose={hideAvatar}
+                            >
+                                <DialogTitle id="avatar-dialog-title">
+                                    {userlogged}
+                                </DialogTitle>
+                                <DialogContent id="avatar-dialog-content">
+                                    <Avatar alt={userlogged} src={urlProfile} variant="rounded" sx={{ width: 550, height: 550 }} />
+                                </DialogContent>
+                            </Dialog>
 
-                        <Menu
-                            sx={{ mt: '45px', marginTop: -2 }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            <MenuItem key={userlogged} onClick={showAvatar}>
-                                <Avatar alt={userlogged} src={urlProfile} variant="circular" sx={{ width: 111, height: 111 }} />
-                            </MenuItem>
-                            {settings.map((setting) => generateMenuItem(setting))}
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+                            <Dialog
+                                open={closeSessionDialog}
+                                onClose={hideCloseSessionDialog}
+                            >
+                                <DialogTitle id="avatar-dialog-title">
+                                    Cerrando sesión...
+                                </DialogTitle>
+                                <DialogContent id="avatar-dialog-content">
+                                    Se va a cerrar la sesión.
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button sx={{ color: "red" }} onClick={hideCloseSessionDialog} autoFocus>Mejor no, cancelar</Button>
+                                    <Button sx={{ color: "#224335" }} onClick={logoutsession}>Si, cerrar sesión</Button>
+                                </DialogActions>
+                            </Dialog>
+                            {generateUserButtonToolbar(userlogged)}
+                        </Box>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+        </React.Fragment>
     );
 }
 
